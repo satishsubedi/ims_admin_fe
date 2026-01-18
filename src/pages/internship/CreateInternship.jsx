@@ -42,10 +42,8 @@ const CreateInternship = () => {
       applicationDeadline: formData.applicationDeadline,
     };
 
-    console.log("Submit payload:", payload);
     // Call API to create internship
     const result = createInternshipApi(payload);
-    console.log(result);
   };
 
   return (

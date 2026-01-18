@@ -14,7 +14,7 @@ export const applicationBaseColumns = [
   },
   {
     header: "Applicant Name",
-    accessorFn: (row) => `${row.profileId.fName} ${row.profileId.lName}`,
+    accessorFn: (row) => `${row.profileId?.fName} ${row.profileId?.lName}`,
   },
   {
     accessorKey: "status",
@@ -22,14 +22,10 @@ export const applicationBaseColumns = [
   },
   {
     header: "Internship For",
-    accesssorFn: (row) => row.internshipId.title,
+    accessorFn: (row) => row.internshipId?.title || "N/A",
   },
   {
-    accessorFn: (row) => row.createdAt?.slice(0, 10),
     header: "Application Date",
-    // cell: (row) => {
-    //   const date = row.getValue("createdAt");
-    //   return date ? date.slice(0, 10) : "";
-    // },
+    accessorFn: (row) => (row.submittedAt || row.createdAt)?.slice(0, 10) || "N/A",
   },
 ];

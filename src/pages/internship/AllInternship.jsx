@@ -13,7 +13,7 @@ import {
   deleteInternshipByIdActions,
   fetchInternshipActions,
 } from "../../features/internship/internshipaction";
-import { internshipBaseColumns } from "../../components/tables/internship-columns ";
+import { internshipBaseColumns } from "../../components/tables/internship-columns";
 
 const AllInternship = () => {
   const [filters, setFilters] = useState({
@@ -25,8 +25,6 @@ const AllInternship = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { internships } = useSelector((state) => state.internshipInfo);
-  console.log(internships);
-  // console.log(internships.profileId.fName);
   useEffect(() => {
     dispatch(fetchInternshipActions());
   }, [dispatch]);
@@ -36,45 +34,51 @@ const AllInternship = () => {
   };
 
   const handleOnEdit = (slug) => {
-    console.log("Edit application with ID:", slug);
     //navigate to edit page
     navigate(`/update_internship/${slug}`);
+  };
+
+  const handleOnView = (slug) => {
+    //navigate to view page
+    navigate(`/internship/${slug}`);
   };
 
   const columns = createColumns({
     columns: internshipBaseColumns,
     onEdit: (row) => handleOnEdit(row.slug),
     onDelete: (row) => handleOnDelete(row._id),
+    onView: (row) => handleOnView(row.slug),
   });
 
   const handleOnFilterChange = (filterType, value) => {
     setFilters((prev) => ({ ...prev, [filterType]: value }));
   };
 
-  const filteredApplications = internships.filter((app) => {
-    // const name = app.profileId.fName + " " + app.profileId.lName;
-    // const matchesSearch =
-    //   app._id.toLowerCase().includes(filters.search.toLowerCase()) ||
-    //   name.toLowerCase().includes(filters.search.toLowerCase());
+  const filteredInternships = internships.filter((item) => {
+    const matchesSearch = filters.search
+      ? item.title.toLowerCase().includes(filters.search.toLowerCase()) ||
+        item.company.toLowerCase().includes(filters.search.toLowerCase())
+      : true;
 
     const matchFromDate = filters.fromDate
-      ? new Date(app.date) >= new Date(filters.fromDate)
+      ? new Date(item.applicationDeadline) >= new Date(filters.fromDate)
       : true;
     const matchToDate = filters.toDate
-      ? new Date(app.date) <= new Date(filters.toDate)
+      ? new Date(item.applicationDeadline) <= new Date(filters.toDate)
       : true;
 
-    return matchFromDate && matchToDate;
+    return matchesSearch && matchFromDate && matchToDate;
   });
+
   return (
-    <>
+    <div className="space-y-4 p-4">
       <FilterOptions
         filters={filters}
-        setFilters={setFilters}
         handleOnFilterChange={handleOnFilterChange}
+        showStatus={false}
       />
-      <CustomDataTable columns={columns} data={filteredApplications} />
-    </>
+      <CustomDataTable columns={columns} data={filteredInternships || []} />
+    </div>
   );
 };
 

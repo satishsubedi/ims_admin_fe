@@ -2,19 +2,21 @@ import React from "react";
 import Header from "./Header";
 import { Outlet } from "react-router";
 import SideBar from "../../pages/sidebar/SideBar";
+import { useSelector } from "react-redux";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 
 const DefaultLayout = () => {
+  const { user } = useSelector((state) => state.userInfo);
   return (
-    <div>
-      <Header />
-      <div className="flex flex-1 pt-20">
-        {/* Sidebar */}
-        <SideBar />
+    <SidebarProvider>
+      {user?._id && <SideBar />}
+      <SidebarInset>
+        <Header />
         <main className="flex-1 p-6">
           <Outlet />
         </main>
-      </div>
-    </div>
+      </SidebarInset>
+    </SidebarProvider>
   );
 };
 

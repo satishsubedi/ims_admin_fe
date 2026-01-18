@@ -7,9 +7,13 @@ import CustomTable from "../../components/CustomComponents/CustomTable";
 import { createColumns } from "@/components/tables/create-columns";
 import { applicationBaseColumns } from "@/components/tables/application-columns.js";
 import CustomDataTable from "../../components/CustomComponents/CustomDataTable";
-import { getAllApplicationAction } from "../../features/application/applicationaction";
+import {
+  getAllApplicationAction,
+  deleteApplicationAction,
+} from "../../features/application/applicationaction";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const ApplicationList = () => {
   const [filters, setFilters] = useState({
@@ -21,24 +25,26 @@ const ApplicationList = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { applications } = useSelector((state) => state.applicationInfo);
-  console.log(applications);
-  // console.log(applications.profileId.fName);
   useEffect(() => {
     dispatch(getAllApplicationAction());
   }, [dispatch]);
 
-  const handleOnDelete = (id) => {
-    console.log("Delete application with ID:", id);
-    //call api to delete application
+  const handleOnDelete = async (id) => {
+    if (window.confirm("Are you sure you want to delete this application?")) {
+      const result = await dispatch(deleteApplicationAction(id));
+      if (result?.success) {
+        toast.success("Application deleted successfully");
+      } else {
+        toast.error(result?.message || "Failed to delete application");
+      }
+    }
   };
 
   const handleOnEdit = (id) => {
-    console.log("Edit application with ID:", id);
     //navigate to edit page
     navigate(`/application-update/${id}`);
   };
   const handleOnView = (id) => {
-    console.log("View application with ID:", id);
     //navigate to view page
     navigate(`/application-view/${id}`);
   };
@@ -53,18 +59,19 @@ const ApplicationList = () => {
     setFilters((prev) => ({ ...prev, [filterType]: value }));
   };
 
-  const filteredApplications = applications.filter((app) => {
-    const name = app.profileId.fName + " " + app.profileId.lName;
+  const filteredApplications = applications?.filter((app) => {
+    const name = app?.profileId?.fName + " " + app?.profileId?.lName;
     const matchesSearch =
       app._id.toLowerCase().includes(filters.search.toLowerCase()) ||
       name.toLowerCase().includes(filters.search.toLowerCase());
     const matchesStatus =
       filters.status === "all" || app.status === filters.status;
+    const appDate = app.submittedAt || app.createdAt;
     const matchFromDate = filters.fromDate
-      ? new Date(app.date) >= new Date(filters.fromDate)
+      ? new Date(appDate) >= new Date(filters.fromDate)
       : true;
     const matchToDate = filters.toDate
-      ? new Date(app.date) <= new Date(filters.toDate)
+      ? new Date(appDate) <= new Date(filters.toDate)
       : true;
 
     return matchesSearch && matchesStatus && matchFromDate && matchToDate;

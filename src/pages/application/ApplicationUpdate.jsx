@@ -25,8 +25,6 @@ const ApplicationUpdate = () => {
     dispatch(getApplicationByIdAction(id));
   }, [dispatch, id]);
   const { application } = useSelector((state) => state.applicationInfo);
-  console.log(application);
-  console.log(application?.profileId?.fName);
   const [formData, setFormData] = useState({
     applicant_name: "",
     status: "",
@@ -44,7 +42,6 @@ const ApplicationUpdate = () => {
   }, [application]);
 
   const handleonUpdate = async () => {
-    console.log("Update application with ID:", id);
     //handle update application api call here
     const { status } = await updateApplicationStatusApi(id, formData.status);
     if (status === "success") {

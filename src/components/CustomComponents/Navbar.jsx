@@ -9,24 +9,24 @@ import {
 } from "@/components/ui/navigation-menu";
 
 const components = [
-  { title: "Home", href: "/home" },
+  { title: "Logout", href: "/logout" },
   { title: "Login", href: "/login" },
-  { title: "Register", href: "/register" },
+  { title: "profile", href: "/profile" },
 ];
 
 const Navbar = () => {
   return (
-    <NavigationMenu className="flex gap-6">
-      <NavigationMenuList className="flex gap-4">
-        {components.map(({ title, href }) => (
-          <NavigationMenuItem key={href} className="list-none">
-            <NavigationMenuLink asChild>
-              <Link to={href}>{title}</Link>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-        ))}
-      </NavigationMenuList>
-    </NavigationMenu>
+    // <NavigationMenu className="flex gap-6">
+    //   <NavigationMenuList className="flex gap-4">
+    //     {components.map(({ title, href }) => (
+    //       <NavigationMenuItem key={href} className="list-none">
+    //         <NavigationMenuLink asChild>
+    //           <Link to={href}>{title}</Link>
+    //         </NavigationMenuLink>
+    //       </NavigationMenuItem>
+    //     ))}
+    //   </NavigationMenuList>
+    // </NavigationMenu>
   );
 };
 

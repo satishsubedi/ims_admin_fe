@@ -1,17 +1,75 @@
-# React + Vite
+# Internship Management System (IMS) - Admin Portal Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A premium, responsive administrative dashboard for managing the Internship Management System. Built with a focus on visual excellence and seamless user experience.
 
-Currently, two official plugins are available:
+## 🎨 Design Philosophy
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The portal features a **premium, glassmorphic UI** with vibrant aesthetics, dynamic background elements, and smooth micro-animations to provide a state-of-the-art administrative experience.
 
-## React Compiler
+## 🚀 Tech Stack
 
-The React Compiler is not enabled on this template. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Framework**: React 19 (Vite)
+- **State Management**: Redux Toolkit & React-Redux
+- **Routing**: React Router 7
+- **Styling**: Tailwind CSS 4 with custom glassmorphism
+- **Table System**: @tanstack/react-table
+- **Icons**: Lucide React & React Icons
+- **Notifications**: React Toastify
+- **UI Components**: Shadcn UI (Radix UI primitives)
+- **API Client**: Axios with custom API processor
+- **PDF Generation**: jsPDF
 
-## Expanding the ESLint configuration
+## 🛠 Features
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
-# ims_client_fe
+- **Dynamic Dashboard**: At-a-glance metrics (Live soon).
+- **User Management**: 
+  - Admin view for managing all staff/admins.
+  - Role-based visibility (Staff cannot edit/delete).
+  - Search by Name, Email, or ID.
+- **Internship Management**:
+  - High-impact detail views with functional tabs.
+  - Active/Inactive status management.
+  - Real-time applicant counters.
+- **Application Tracking**:
+  - Comprehensive list of all internship applications.
+  - Rich detail views for candidate profiles.
+  - Status management (Pending, Approved, Rejected).
+- **Secure Authentication**: Protected routes with token-based session management.
+
+## 🚦 Getting Started
+
+### Prerequisites
+
+- Node.js installed
+- Running Backend API
+
+### Installation
+
+1. Install dependencies:
+   ```bash
+   yarn install
+   ```
+
+2. Configure environment variables (Create a `.env` file):
+   ```env
+   VITE_BASE_API_URL=http://localhost:8000
+   ```
+
+3. Run in development mode:
+   ```bash
+   yarn dev
+   ```
+
+4. Build for production:
+   ```bash
+   yarn build
+   ```
+
+## 📂 Project Structure
+
+- `src/components/`: Reusable UI components and table layouts.
+- `src/features/`: Redux slices, actions, and API definitions.
+- `src/pages/`: Main page components (Auth, Internship, Applications).
+- `src/hooks/`: Custom React hooks (Forms, etc.).
+- `src/services/`: API communication layer.
+- `src/styles/`: Global CSS and Tailwind configuration.

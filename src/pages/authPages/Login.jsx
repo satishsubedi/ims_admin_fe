@@ -13,8 +13,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useNavigate } from "react-router-dom";
 import Submit from "../../components/CustomComponents/Submit";
-import { use, useActionState } from "react";
-import { Mail, Lock } from "lucide-react";
+import { use, useActionState, useEffect } from "react";
+import { Mail, Lock, CloudCog } from "lucide-react";
 import { Link } from "react-router";
 
 import { signInWithPopup } from "firebase/auth";
@@ -29,10 +29,26 @@ import { FaFacebook, FaGithub } from "react-icons/fa";
 import { loginUser } from "../../features/user/userapi.js";
 import { useDispatch, useSelector } from "react-redux";
 import { loginAction } from "../../features/user/useraction.js";
+import { useLocation } from "react-router-dom";
 
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const{ user} = useSelector((state) => state.userInfo);
+  const location = useLocation();
+  const path = location.pathname.state?.from || "/dashboard";
+  
+
+
+
+useEffect(() => {
+  if(user?._id){
+    
+    navigate(path);
+  }
+  
+}, [user,path])
+
   const handleOnSubmit = async (prevState, formData) => {
     const email = formData.get("email");
     const password = formData.get("password");
@@ -43,40 +59,20 @@ const Login = () => {
     // simulate API call
     if (email && password) {
       const result = await dispatch(loginAction({ email, password }));
-      console.log(result);
-      result.status === "success" && navigate("/");
+      if (result?.status === "success" && result?.message === "change password") {
+        // extract token from link
+        const link = result?.payload;
+        const token = new URL(link).searchParams.get("token");
+        navigate(`/reset-password?token=${token}`);
+        return;
+      }
+      return result;
     }
   };
 
   const [state, formAction] = useActionState(handleOnSubmit, {});
 
-  // ----------------- OAuth Handlers -----------------
-  const handleGoogleLogin = async () => {
-    try {
-      const result = await signInWithPopup(auth, googleProvider);
-      console.log("✅ Google Login Success:", result.user);
-    } catch (error) {
-      console.error("❌ Google Login Error:", error.message);
-    }
-  };
 
-  const handleFacebookLogin = async () => {
-    try {
-      const result = await signInWithPopup(auth, facebookProvider);
-      console.log("✅ Facebook Login Success:", result.user);
-    } catch (error) {
-      console.error("❌ Facebook Login Error:", error.message);
-    }
-  };
-
-  const handleGithubLogin = async () => {
-    try {
-      const result = await signInWithPopup(auth, githubProvider);
-      console.log("✅ GitHub Login Success:", result.user);
-    } catch (error) {
-      console.error("❌ GitHub Login Error:", error.message);
-    }
-  };
 
   return (
     <div
@@ -117,15 +113,6 @@ const Login = () => {
               <CardDescription className="text-gray-600 dark:text-gray-300 mt-1">
                 Enter your email and password below
               </CardDescription>
-              <CardAction>
-                <Link
-                  to="/register"
-                  variant=""
-                  className="p-0 text-blue-600 hover:underline"
-                >
-                  Sign Up
-                </Link>
-              </CardAction>
             </CardHeader>
 
             <CardContent>
@@ -169,8 +156,10 @@ const Login = () => {
                   </div>
 
                   {/* Error message */}
-                  {state?.error && (
-                    <div className="text-sm text-red-600">{state.error}</div>
+                  {(state?.error || state?.message) && state?.status !== "success" && (
+                    <div className="text-sm text-red-600">
+                      {state.error || state.message}
+                    </div>
                   )}
 
                   {/* Submit */}
@@ -180,43 +169,7 @@ const Login = () => {
                 </div>
               </form>
 
-              {/* Divider */}
-              <div className="flex items-center my-6">
-                <hr className="flex-1 border-gray-300 dark:border-gray-600" />
-                <span className="px-3 text-gray-500 text-sm">
-                  or continue with
-                </span>
-                <hr className="flex-1 border-gray-300 dark:border-gray-600" />
-              </div>
-
-              {/* OAuth Buttons */}
-              <div className="flex flex-col gap-3">
-                <Button
-                  variant="outline"
-                  className="w-full flex items-center justify-center gap-2 border border-gray-300 hover:bg-gray-100 transition"
-                  onClick={handleGoogleLogin}
-                >
-                  <FcGoogle className="text-xl" /> Continue with Google
-                </Button>
-
-                <Button
-                  variant="outline"
-                  className="w-full flex items-center justify-center gap-2 border border-gray-300 hover:bg-blue-50 transition"
-                  onClick={handleFacebookLogin}
-                >
-                  <FaFacebook className="text-blue-600 text-xl" /> Continue with
-                  Facebook
-                </Button>
-
-                <Button
-                  variant="outline"
-                  className="w-full flex items-center justify-center gap-2 border border-gray-300 hover:bg-gray-100 transition"
-                  onClick={handleGithubLogin}
-                >
-                  <FaGithub className="text-gray-800 text-xl" /> Continue with
-                  GitHub
-                </Button>
-              </div>
+             
             </CardContent>
           </Card>
         </div>

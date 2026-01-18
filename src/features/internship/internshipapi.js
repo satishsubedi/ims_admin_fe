@@ -23,7 +23,6 @@ export const getInternshipBySlugApi = async (slug) => {
 export const updateInternshipBySlugApi = async (slug, payload) => {
   try {
     const url = `${internshipApi}/update/${slug}`;
-    console.log(url);
     const method = "PUT";
     const result = await apiProcessor({
       url,
@@ -33,7 +32,7 @@ export const updateInternshipBySlugApi = async (slug, payload) => {
     });
     return result;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 

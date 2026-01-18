@@ -1,130 +1,93 @@
 "use client";
 
-import React, { useState } from "react";
-import { Menu, X, Search, Home, Briefcase, Info, Mail } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { Link } from "react-router";
+import React from "react";
+import { Home, LogOut } from "lucide-react";
+import { Link, useNavigate } from "react-router";
 import { SidebarTrigger } from "@/components/ui/sidebar";
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { autologinAction, logoutAction } from "@/features/user/useraction";
+import { Separator } from "@/components/ui/separator";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Header = () => {
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const toggleMobileMenu = () => setMobileOpen(!mobileOpen);
+  const { user } = useSelector((state) => state.userInfo);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const links = [
-    { name: "Home", href: "/", icon: <Home className="w-4 h-4" /> },
-    {
-      name: "Internships",
-      href: "/internships",
-      icon: <Briefcase className="w-4 h-4" />,
-    },
-  ];
+  useEffect(() => {
+    !user?._id && dispatch(autologinAction());
+  }, []);
+
+  const handleLogout = () => {
+    dispatch(logoutAction());
+  };
 
   return (
-    <nav className="fixed w-full z-50 top-0 left-0 px-6 py-3 backdrop-blur-md bg-white/70 dark:bg-neutral-900/70 border-b border-white/10 dark:border-neutral-800 shadow-md transition-all">
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-        {/* Left: Logo */}
-        {/* Left: Sidebar Trigger + Logo */}
-        <div className="flex items-center gap-2">
-          {/* Desktop Sidebar Trigger */}
-          <div className="hidden md:flex">
-            <SidebarTrigger />
-          </div>
-
-          {/* Logo */}
-          <div className="flex-shrink-0 text-2xl font-bold text-blue-600 hover:text-blue-700 transition-colors cursor-pointer">
-            IMS
-          </div>
-        </div>
-
-        {/* Center: Search Bar */}
-        <div className="flex-1 mx-4 hidden md:flex justify-center">
-          <div className="relative w-full max-w-3xl">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <Input
-              placeholder="Search internships..."
-              className="pl-10 pr-4 py-2 rounded-full w-full bg-white/90 dark:bg-neutral-800/80 border border-gray-200 dark:border-neutral-700 shadow-sm focus:ring-2 focus:ring-blue-500 transition"
-            />
-          </div>
-        </div>
-
-        {/* Right: Links + Buttons */}
-        <div className="hidden md:flex items-center gap-4">
-          {links.map((link) => (
-            <Link
-              key={link.name}
-              to={link.href}
-              className="flex items-center gap-1 text-gray-700 dark:text-gray-200 hover:text-blue-600 transition-colors font-medium"
-            >
-              {link.icon}
-              {link.name}
-            </Link>
-          ))}
-
-          {/* Login / Sign Up */}
-          <Link to="/login">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-md transition">
-              Login
-            </button>
-          </Link>
-          <Link to="/register">
-            <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded-md transition">
-              Sign Up
-            </button>
-          </Link>
-        </div>
-
-        {/* Mobile Hamburger */}
-        <div className="md:hidden flex items-center">
-          <button
-            onClick={toggleMobileMenu}
-            className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-neutral-800 transition"
-          >
-            {mobileOpen ? (
-              <X className="w-6 h-6 text-gray-700 dark:text-gray-200" />
-            ) : (
-              <Menu className="w-6 h-6 text-gray-700 dark:text-gray-200" />
-            )}
-          </button>
-        </div>
+    <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 px-4 transition-[width,height] ease-linear">
+      <div className="flex items-center gap-2 mr-4">
+        <SidebarTrigger className="-ml-1" />
+        <Separator orientation="vertical" className="mr-2 h-4" />
       </div>
 
-      {/* Mobile Menu */}
-      {mobileOpen && (
-        <div className="md:hidden mt-2 flex flex-col gap-3 bg-white/80 dark:bg-neutral-900/70 backdrop-blur-sm p-4 rounded-lg border border-white/10 dark:border-neutral-800 shadow-lg animate-slide-down">
-          {links.map((link) => (
-            <Link
-              key={link.name}
-              to={link.href}
-              className="flex items-center gap-2 text-gray-700 dark:text-gray-200 hover:text-blue-600 transition-colors font-medium py-2 px-2 rounded-md"
-              onClick={() => setMobileOpen(false)}
-            >
-              {link.icon}
-              {link.name}
-            </Link>
-          ))}
-
-          {/* Mobile Search */}
-          <div className="relative mt-2">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <Input
-              placeholder="Search internships..."
-              className="pl-10 pr-4 py-2 rounded-full w-full bg-white/90 dark:bg-neutral-800/80 border border-gray-200 dark:border-neutral-700 shadow-sm focus:ring-2 focus:ring-blue-500 transition"
-            />
-          </div>
-
-          <Link to="/login">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1 rounded-md mt-2 transition">
-              Login
-            </button>
-          </Link>
-          <Link to="/register">
-            <button className="bg-green-600 hover:bg-green-700 text-white px-4 py-1 rounded-md mt-2 transition">
-              Sign Up
-            </button>
-          </Link>
+      <div className="flex flex-1 items-center justify-between">
+        {/* Left Side (Breadcrumbs or Page Title could go here) */}
+        <div className="flex items-center gap-2 text-sm font-medium">
+             <Link to="/" className="flex items-center gap-2 text-primary">
+                 <Home className="h-4 w-4" />
+                 <span>Home</span>
+             </Link>
         </div>
-      )}
-    </nav>
+
+        {/* Right Side */}
+        <div className="flex items-center gap-4">
+          {user?._id ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <div className="flex items-center gap-3 cursor-pointer hover:bg-muted/50 p-2 rounded-lg transition-colors">
+                    <div className="text-right hidden md:block">
+                        <p className="text-sm font-medium leading-none">{user?.fName} {user?.lName}</p>
+                        <p className="text-xs text-muted-foreground">{user?.email}</p>
+                    </div>
+                  <Avatar className="h-9 w-9 border-2 border-primary/10">
+                    <AvatarImage src="" alt={user?.fName} />
+                    <AvatarFallback className="bg-primary text-primary-foreground">
+                      {user?.fName?.charAt(0)?.toUpperCase() || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                </div>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={() => navigate("/profile")}>
+                  Profile
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout} className="text-destructive focus:text-destructive">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  <span>Log out</span>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+             <Link to="/login">
+                <button className="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-md text-sm font-medium transition-colors shadow-sm">
+                  Login
+                </button>
+              </Link>
+          )}
+        </div>
+      </div>
+    </header>
   );
 };
 export default Header;

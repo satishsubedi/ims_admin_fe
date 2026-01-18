@@ -41,9 +41,11 @@ const UpdateInternship = () => {
       company: formData.company,
       location: formData.location,
       technologies: formData.technologies.split(",").map((t) => t.trim()),
+      stipend: formData.stipend,
+      duration: formData.duration,
+      applicationDeadline: formData.applicationDeadline,
     };
 
-    console.log("Submit payload:", payload);
     // Call API to create formdata
     const { status } = await updateInternshipBySlugApi(slug, payload);
     if (status === "success") {
@@ -52,7 +54,6 @@ const UpdateInternship = () => {
     }
 
     // const result = createInternshipApi(payload);
-    // console.log(result);
   };
 
   useEffect(() => {
